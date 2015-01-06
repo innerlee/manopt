@@ -30,7 +30,7 @@ function low_rank_matrix_completion()
     
     % Random data generation. First, choose the size of the problem.
     % We will complete a matrix of size mxn of rank k:
-    m = 200;
+    m = 2000;
     n = 5000;
     k = 10;
     % Generate a random mxn matrix A of rank k

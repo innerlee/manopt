@@ -114,10 +114,13 @@ function [stepsize, newx, storedb, lsmem, lsstats] = ...
             scale = 1 + ratio;
             scale = min(lb, scale);
             scale = max(ub, scale);
+            
         end
+        fprintf('scale: %f \n', scale);
     else
         scale = 1;
     end
+    
     
     if scale == 1
         alpha = alpha1;  %#ok<NASGU>

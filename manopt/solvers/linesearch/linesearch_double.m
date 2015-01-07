@@ -49,18 +49,86 @@ function [stepsize, newx, storedb, lsmem, lsstats] = ...
 % Change log: 
 %
 
-
     % Backtracking default parameters. These can be overwritten in the
     % options structure which is passed to the solver.
     default_options.ls_contraction_factor = .5;
     default_options.ls_suff_decr = 1e-4;
     default_options.ls_max_steps = 25;
     
+    % ----------------
+    % options for double step
+    % ----------------
+    default_options.ls_lb = 0.8; % lower bound
+    default_options.ls_ub = 1.6; % upper bound
+    default_options.ls_flattol = 1e-4; % how close to 1
+    default_options.ls_flatcounter = 5; % flat when 5 times succesively
+    % ----------------
+    
     options = mergeOptions(default_options, options);
     
     contraction_factor = options.ls_contraction_factor;
     suff_decr = options.ls_suff_decr;
     max_ls_steps = options.ls_max_steps;
+
+    % ----------------
+    % parameters for double step
+    % ----------------
+    lb = options.ls_lb;
+    ub = options.ls_ub;
+    flattol = options.ls_flattol;
+    flatcounter = options.ls_flatcounter;
+    persistent flat;
+    if isempty(flat)
+        flat = flatcounter;
+    end
+    % ----------------
+    
+    % ----------------
+    % start now.
+    % ----------------
+    
+    % step 1.
+    [alpha1, storedb] = getLinesearch(problem, x, d, storedb);
+    % go to next point x2.
+    x2 = problem.M.retr(x, d, alpha1);
+    
+    % if flat == 0, skip next step
+    if flat > 0
+        % move direction to x2
+        d2 = problem.M.transp(x, x2, d);
+        % scales of directions
+        norm_d  = problem.M.norm(x, d);
+        norm_d2 = problem.M.norm(x2, d2);
+        % step 2.
+        [alpha2, storedb] = getLinesearch(problem, x2, d2, storedb);
+        % scale properly.
+        ratio = (alpha2 * norm_d2)/(alpha1 * norm_d);
+        if abs(ratio) < flattol
+            % do not use step2, too little effect.
+            scale = 1;
+            flat = flat - 1;
+        else
+            % step2 take into effect.
+            flat = flatcounter;
+            % confine the scale between lower and upper bound
+            scale = 1 + ratio;
+            scale = min(lb, scale);
+            scale = max(ub, scale);
+        end
+    else
+        scale = 1;
+    end
+    
+    if scale == 1
+        alpha = alpha1;  %#ok<NASGU>
+        newx = x2;
+    else      
+        % at last, get the ultimate alpha
+        alpha = alpha1 * scale;
+        newx = problem.M.retr(x, d, alpha);
+    end
+    
+    % ----------------
     
     % Obtain an initial guess at alpha from the problem structure. It is
     % assumed that the present line-search is only called when the problem
@@ -68,7 +136,7 @@ function [stepsize, newx, storedb, lsmem, lsstats] = ...
     [alpha, storedb] = getLinesearch(problem, x, d, storedb);
     
     % Make the chosen step and compute the cost there.
-    newx = problem.M.retr(x, d, alpha);
+%     newx = problem.M.retr(x, d, alpha);
     [newf, storedb] = getCost(problem, newx, storedb);
     cost_evaluations = 1;
     

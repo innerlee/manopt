@@ -1,5 +1,5 @@
 function [stepsize, newx, storedb, lsmem, lsstats] = ...
-           linesearch_double(problem, x, d, f0, df0, options, storedb, lsmem)
+         linesearch_double(problem, x, d, f0, df0, options, storedb, lsmem)
 % New line-search based on the linesearch_hint in the problem structure.
 %
 % function [stepsize, newx, storedb, lsmem, lsstats] = 

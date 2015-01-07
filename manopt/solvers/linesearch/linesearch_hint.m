@@ -10,6 +10,7 @@ function [stepsize, newx, storedb, lsmem, lsstats] = ...
 % direction, as indicated by a negative df0 = directional derivative of f
 % at x along d.
 %
+% 
 % The algorithm obtains an initial step size candidate from the problem
 % structure, typically through the problem.linesearch function. If that
 % step does not fulfill the Armijo sufficient decrease criterion, that step

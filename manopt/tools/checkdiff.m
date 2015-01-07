@@ -84,7 +84,7 @@ function checkdiff(problem, x, d)
     % as the square of the stepsize, i.e., in loglog scale, the error
     % should have a slope of 2.
     window_len = 10;
-    [range poly] = identify_linear_piece(log10(h), log10(err), window_len);
+    [range, poly] = identify_linear_piece(log10(h), log10(err), window_len);
     hold on;
         loglog(h(range), 10.^polyval(poly, log10(h(range))), ...
                'r-', 'LineWidth', 3);

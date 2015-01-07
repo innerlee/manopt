@@ -240,7 +240,7 @@ function M = fixedrankfactory_3factors_preconditioned(m, n, k)
 end
 
 % Linear combination of tangent vectors
-function d = lincomb(x, a1, d1, a2, d2) %#ok<INLSL>
+function d = lincomb(~, a1, d1, a2, d2) 
     
     if nargin == 3
         d.L = a1*d1.L;
@@ -257,7 +257,7 @@ function d = lincomb(x, a1, d1, a2, d2) %#ok<INLSL>
 end
 
 function A = uf(A)
-    [L, unused, R] = svd(A, 0); %#ok
+    [L, ~, R] = svd(A, 0);
     A = L*R';
 end
 

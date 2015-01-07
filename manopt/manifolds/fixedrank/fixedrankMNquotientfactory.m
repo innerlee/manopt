@@ -92,7 +92,7 @@ M.exp = @exponential;
         Y.M = [X.M t*eta.M]*expm([A -S ; eye(k) A])*eye(2*k, k)*expm(-A);
         
         % re-orthonormalize (seems necessary from time to time)
-        [Q R] = qr(Y.M, 0);
+        [Q, R] = qr(Y.M, 0);
         Y.M = Q * diag(sign(diag(R)));
         
         Y.N = X.N + t*eta.N;
@@ -141,7 +141,7 @@ end
 
 
 % Linear combination of tangent vectors
-function d = lincomb(x, a1, d1, a2, d2) %#ok<INMSL>
+function d = lincomb(~, a1, d1, a2, d2) 
 
 if nargin == 3
     d.M = a1*d1.M;
@@ -157,6 +157,6 @@ end
 
 
 function A = uf(A)
-[L, unused, R] = svd(A, 0);
+[L, ~, R] = svd(A, 0);
 A = L*R';
 end

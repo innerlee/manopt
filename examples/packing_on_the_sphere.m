@@ -146,8 +146,8 @@ function [X, maxdot] = packing_on_the_sphere(d, n, epsilon, X0)
     opts.tolgradnorm = 1e-8;
     opts.maxtime = 1200;
     opts.maxiter = 1e5;
-    % X = trustregions(problem, X0, opts);
-    X = conjugategradient(problem, X0, opts);
+    X = trustregions(problem, X0, opts);
+    % X = conjugategradient(problem, X0, opts);
     
     % Evaluate the maximum inner product between any two points of X.
     XXt = X*X';

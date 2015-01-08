@@ -194,7 +194,7 @@ info(1) = stats;
 info(min(10000, options.maxiter+1)).iter = [];
 
 % Initial linesearch memory
-lsmem = [];
+lsmem = struct();
 
 
 if options.verbosity >= 2

@@ -79,10 +79,15 @@ function [stepsize, newx, storedb, lsmem, lsstats] = ...
     flattol = options.ls_flattol;
     flatcounter = options.ls_flatcounter;
 
-    if ~isfield(lsmem,'flat')
-        lsmem.flat = flatcounter;
+    if ~isfield(lsmem.flat)
+        
     end
-    flat = lsmem.flat;
+    if ~isempty(lsmem.ls_flatdetect)
+        if options.ls_flatdetect
+            flat = flatcounter;
+            options.ls_flatdetect = [];
+        end
+    end
     % ----------------
     
     % ----------------
@@ -180,7 +185,5 @@ function [stepsize, newx, storedb, lsmem, lsstats] = ...
     lsstats.costevals = cost_evaluations;
     lsstats.stepsize = stepsize;
     lsstats.alpha = alpha;
-    
-    lsmem.flat = flat;
     
 end

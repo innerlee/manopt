@@ -27,10 +27,12 @@ function low_rank_matrix_completion2()
 % 
 % Change log:
 % 
+
+    clc;
     
     % Random data generation. First, choose the size of the problem.
     % We will complete a matrix of size mxn of rank k:
-    m = 1000;
+    m = 5000;
     n = 5000;
     k = 10;
     % Generate a random mxn matrix A of rank k
@@ -175,8 +177,14 @@ function low_rank_matrix_completion2()
         t = - dir_omega \ residual_omega ;
     end
 
+
+
+
+
+    options = struct();
+    %options.beta_type = 'P-R';
     % Notice that for this solver, the Hessian is not needed.
-    [Xcg, xcost, info, options] = conjugategradient(problem, X0);
+    [Xcg, xcost, info, options] = conjugategradient(problem, X0, options);
     
     fprintf('Take a look at the options that CG used:\n');
     disp(options);
@@ -190,6 +198,8 @@ function low_rank_matrix_completion2()
     fprintf('Try it again with the two steps linesearch.\n');
 
     options.linesearch = @linesearch_double;
+    options.ls_flatcounter = 5;
+    %options.beta_type = 'P-R';
     
     [Xcg, xcost, info, options] = conjugategradient(problem, X0, options);
     
@@ -202,19 +212,19 @@ function low_rank_matrix_completion2()
     
     
     
-    fprintf('Try it again without the linesearch helper.\n');
-    
-    % Remove the linesearch helper from the problem structure.
-    problem = rmfield(problem, 'linesearch');
-    options.linesearch = @linesearch_double;
-    
-    [Xcg, xcost, info, options] = conjugategradient(problem, X0);
-    
-    fprintf('Take a look at the options that CG used:\n');
-    disp(options);
-    fprintf('And see how many trials were made at each line search call:\n');
-    info_ls = [info.linesearch];
-    disp([info_ls.costevals]);
+%     fprintf('Try it again without the linesearch helper.\n');
+%     
+%     % Remove the linesearch helper from the problem structure.
+%     problem = rmfield(problem, 'linesearch');
+%     options.linesearch = @linesearch_double;
+%     
+%     [Xcg, xcost, info, options] = conjugategradient(problem, X0);
+%     
+%     fprintf('Take a look at the options that CG used:\n');
+%     disp(options);
+%     fprintf('And see how many trials were made at each line search call:\n');
+%     info_ls = [info.linesearch];
+%     disp([info_ls.costevals]);
     
     
     
